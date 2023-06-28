@@ -8,7 +8,19 @@ class SonyBudsSpider(scrapy.Spider):
     start_urls = ['http://www.amazon.com/s?k=sony+earbuds/']
    
     def parse(self, response):
-        buds_title = response.xpath("/html/body/div[1]/div[2]/div[1]/div[1]/div/span[1]/div[1]/div[*]/div/div/div/div/div/div[2]/div/div/div[1]/h2/a/span/text()").getall()
+        
+        # 2
+        item_block = response.xpath("//text()[contains(., 'Results')]/following::div[@data-index]//text()[contains(., 'WF-1000XM4')]/ancestor-or-self::div[5]").getall()
+        
+        
         yield{
-            'buds_titles': buds_title
+            'item_block': item_block
         }
+        
+        #================ olds ================#
+        # buds_title = response.xpath("/html/body/div[1]/div[2]/div[1]/div[1]/div/span[1]/div[1]/div[*]/div/div/div/div/div/div[2]/div/div/div[1]/h2/a/span/text()").getall()
+        
+        # whole item # 
+        # 1 
+        # item_block = response.xpath("//text()[contains(., 'Results')]/following::div[@data-index]//text()[contains(., 'WF-1000XM4')]/parent::node()/parent::a[contains(@href, 'WF-1000XM4')]/parent::node()/parent::node()/parent::node()").getall()
+        
