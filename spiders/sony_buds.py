@@ -4,17 +4,24 @@ import scrapy
 class SonyBudsSpider(scrapy.Spider):
     name = 'sony_buds'
     user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
-    allowed_domains = ['www.amazon.com/s?k=sony+earbuds']
-    start_urls = ['http://www.amazon.com/s?k=sony+earbuds/']
+    allowed_domains = ['www.amazon.com']
+    start_urls = ['https://www.amazon.com/s?k=sony+wf-1000xm4']
    
     def parse(self, response):
+        item_name = []
+        item_price = []
         
         # 2
-        item_block = response.xpath("//text()[contains(., 'Results')]/following::div[@data-index]//text()[contains(., 'WF-1000XM4')]/ancestor-or-self::div[5]").getall()
+        item_blocks = response.xpath("//text()[contains(., 'Results')]/following::div[@data-index]//text()[contains(., 'WF-1000XM4')]/ancestor-or-self::div[5]")
         
-        
+        for item in item_blocks:
+            item_name.append(item.xpath(".//text()[contains(., 'Sony')]").get())
+            item_price.append(item.xpath('.//descendant::span[@class="a-offscreen"][1]//text()').get())
+
         yield{
-            'item_block': item_block
+            # 'item_block': item_block
+            'item_names': item_name,
+            'item_prices': item_price
         }
         
         #================ olds ================#
@@ -22,5 +29,5 @@ class SonyBudsSpider(scrapy.Spider):
         
         # whole item # 
         # 1 
-        # item_block = response.xpath("//text()[contains(., 'Results')]/following::div[@data-index]//text()[contains(., 'WF-1000XM4')]/parent::node()/parent::a[contains(@href, 'WF-1000XM4')]/parent::node()/parent::node()/parent::node()").getall()
+        # item_blocks = response.xpath("//text()[contains(., 'Results')]/following::div[@data-index]//text()[contains(., 'WF-1000XM4')]/parent::node()/parent::a[contains(@href, 'WF-1000XM4')]/parent::node()/parent::node()/parent::node()").getall()
         
