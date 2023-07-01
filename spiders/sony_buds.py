@@ -24,12 +24,12 @@ class SonyBudsSpider(scrapy.Spider):
             item_links.append(item_link)
             
             absolute_url = f"https://www.amazon.com{item_link}"
-            # yield scrapy.Request(url=absolute_url, callback=self.parse_item, meta={'item_name': item_name})
+            yield scrapy.Request(url=absolute_url, callback=self.parse_item, meta={'item_name': item_name})
        
-        yield{
-            'item_names': item_names,
-            'item_prices': item_prices
-        }
+        # yield{
+        #     'item_names': item_names,
+        #     'item_prices': item_prices
+        # }
     def parse_item(self, response):
        item_name = response.request.meta['item_name']
        review_data = [item_name]
