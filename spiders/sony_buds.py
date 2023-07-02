@@ -19,12 +19,13 @@ class SonyBudsSpider(scrapy.Spider):
         for item in item_blocks:
             item_name = item.xpath(".//text()[contains(., 'Sony')]").get()
             item_names.append(item_name)
-            item_prices.append(item.xpath('.//descendant::span[@class="a-offscreen"][1]//text()').get())
+            item_price = item.xpath('.//descendant::span[@class="a-offscreen"][1]//text()').get()
+            item_prices.append(item_price)
             item_link = item.xpath(".//text()[contains(., 'Sony')]/ancestor-or-self::a[1]/@href").get()
             item_links.append(item_link)
             
             absolute_url = f"https://www.amazon.com{item_link}"
-            yield scrapy.Request(url=absolute_url, callback=self.parse_item, meta={'item_name': item_name})
+            yield scrapy.Request(url=absolute_url, callback=self.parse_item, meta={'item_name': item_name, 'item_price': item_price})
        
         # yield{
         #     'item_names': item_names,
@@ -32,7 +33,8 @@ class SonyBudsSpider(scrapy.Spider):
         # }
     def parse_item(self, response):
        item_name = response.request.meta['item_name']
-       review_data = [item_name]
+       item_price = response.request.meta['item_price']
+       review_data = [item_name, {'Price': item_price}]
        reviews = response.xpath('//*[@data-hook="review"]')
 
        for review in reviews:
